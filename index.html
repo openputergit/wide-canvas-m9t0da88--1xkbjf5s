@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mIntair One-Click Faucet | Chain Selector</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a16;
+      --bg-secondary: #171730;
+      --text-primary: #e0e0ff;
+      --text-secondary: #a0a0c0;
+      --accent: #00f0ff;
+      --accent-secondary: #ff00aa;
+      --accent-hover: #00c8d5;
+      --border: #303060;
+      --card-bg: rgba(23, 23, 48, 0.7);
+      --disabled-bg: #252540;
+      --glassmorphism-bg: rgba(23, 23, 48, 0.2);
+      --glassmorphism-border: rgba(0, 240, 255, 0.2);
+      --glassmorphism-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.1);
+      --neon-shadow: 0 0 5px rgba(0, 240, 255, 0.5), 0 0 10px rgba(0, 240, 255, 0.3);
+      --neon-shadow-accent: 0 0 5px rgba(255, 0, 170, 0.5), 0 0 10px rgba(255, 0, 170, 0.3);
+    }
+
+    .light {
+      --bg-primary: #e6e6ff;
+      --bg-secondary: #f0f0ff;
+      --text-primary: #0a0a16;
+      --text-secondary: #454570;
+      --accent: #0090aa;
+      --accent-secondary: #d400aa;
+      --accent-hover: #006d82;
+      --border: #c0c0e0;
+      --card-bg: rgba(240, 240, 255, 0.7);
+      --disabled-bg: #d5d5e0;
+      --glassmorphism-bg: rgba(240, 240, 255, 0.2);
+      --glassmorphism-border: rgba(0, 144, 170, 0.2);
+      --glassmorphism-shadow: 0 8px 32px 0 rgba(0, 144, 170, 0.1);
+      --neon-shadow: none;
+      --neon-shadow-accent: none;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      height: 100vh;
+      overflow: hidden;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+    }
+
+    .orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .dark-bg {
+      background-image: linear-gradient(to bottom right, #0a0a16, #190040);
+      background-size: cover;
+      position: relative;
+    }
+    
+    .dark-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .dark-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at bottom left, rgba(255, 0, 170, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .light-bg {
+      background-image: linear-gradient(to bottom right, #e6e6ff, #d0e0ff);
+      background-size: cover;
+      position: relative;
+    }
+
+    .light-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at top right, rgba(0, 144, 170, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .glassmorphism {
+      background: var(--glassmorphism-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glassmorphism-border);
+      box-shadow: var(--glassmorphism-shadow);
+      border-radius: 0.5rem;
+    }
+
+    .cyberpunk-border {
+      position: relative;
+    }
+
+    .cyberpunk-border::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--accent), var(--accent-secondary));
+      z-index: -1;
+      border-radius: 0.6rem;
+      opacity: 0.7;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: var(--neon-shadow);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      transition: 0.5s;
+    }
+
+    .btn-primary:hover::after {
+      transform: rotate(45deg) translate(100%, 100%);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--accent);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(0, 240, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .select-box {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .select-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2);
+    }
+
+    .checkbox-custom {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: all 0.2s ease;
+      background-color: var(--glassmorphism-bg);
+    }
+
+    .checkbox-custom:hover {
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .checkbox-custom.checked {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: var(--neon-shadow);
+    }
+
+    .checkbox-custom.checked::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      width: 5px;
+      height: 9px;
+      border: solid var(--bg-primary);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .tier-card {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tier-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .tier-card.selected {
+      border: 1px solid var(--accent);
+      box-shadow: var(--neon-shadow);
+    }
+    
+    .tier-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(255, 0, 170, 0.05) 100%);
+      z-index: -1;
+    }
+
+    .tier-card.selected::before {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(255, 0, 170, 0.1) 100%);
+    }
+
+    #save-preset-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    #save-preset-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .connect-wallet-btn {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .connect-wallet-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      z-index: -1;
+      transition: all 0.6s ease;
+    }
+
+    .connect-wallet-btn:hover::before {
+      left: 100%;
+    }
+
+    .logo-pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .search-box {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 3px;
+    }
+    
+    .chain-selection-container {
+      max-height: calc(100vh - 26rem);
+      overflow-y: auto;
+    }
+    
+    .content-container {
+      max-height: 100vh;
+    }
+    
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body class="dark dark-bg">
+  <div class="mx-auto px-4 py-4 h-screen flex flex-col">
+    <div class="max-w-5xl mx-auto w-full flex-grow flex flex-col">
+      <!-- Header with Logo and Connect Wallet -->
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center">
+          <div class="logo-pulse text-3xl font-bold mr-2 text-cyan-400">
+            <i class="bi bi-droplet-fill"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold orbitron bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">mIntair</h1>
+            <p class="text-sm text-gray-400">One-Click Faucet</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="p-2 rounded-full focus:outline-none transition-all duration-300 hover:bg-opacity-20 hover:bg-cyan-500 hover:scale-110">
+            <i class="bi bi-sun text-xl text-cyan-400"></i>
+          </button>
+          
+          <!-- Connect Wallet Button -->
+          <button id="connectWallet" class="connect-wallet-btn glassmorphism cyberpunk-border py-2 px-4 rounded-lg font-medium flex items-center hover:shadow-lg transition-all duration-300">
+            <i class="bi bi-wallet2 mr-2 text-cyan-400"></i>
+            <span id="walletStatus">Connect Wallet</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-grow flex flex-col">
+        <!-- Preset Selector -->
+        <div class="mb-4">
+          <h2 class="text-lg font-semibold mb-2 flex items-center orbitron">
+            <i class="bi bi-bookmark-star-fill mr-2 text-cyan-400"></i>
+            Presets
+          </h2>
+          <select id="preset-selector" class="glassmorphism w-full p-3 rounded-lg select-box">
+            <option selected disabled>Select a preset</option>
+            <option value="preset1">All EVM Chains</option>
+            <option value="preset2">Popular Mainnet Chains</option>
+            <option value="preset3">Testnet Chains</option>
+            <option value="preset4">EVM Compatible</option>
+            <option value="custom" id="custom-option" disabled hidden>Custom Selection</option>
+          </select>
+          <div id="save-preset-container" class="hidden mt-2 flex justify-end">
+            <button id="save-preset-btn" class="px-3 py-1 rounded-lg flex items-center transition-all hover:opacity-80 text-cyan-400">
+              <i class="bi bi-save mr-1"></i> Save as Preset
+            </button>
+          </div>
+        </div>
+
+        <!-- Chain Selection -->
+        <div class="mb-4">
+          <div class="flex justify-between items-center mb-2">
+            <h2 class="text-lg font-semibold flex items-center orbitron">
+              <i class="bi bi-link-45deg mr-2 text-cyan-400"></i>
+              Select Chains
+            </h2>
+            <!-- Search Box -->
+            <div class="w-1/3">
+              <input type="text" id="chain-search" class="search-box glassmorphism" placeholder="Search chains...">
+            </div>
+          </div>
+          
+          <div class="glassmorphism cyberpunk-border rounded-lg p-4 chain-selection-container custom-scrollbar">
+            <div class="grid-container" id="chains-grid">
+              <!-- Chain checkboxes will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction Tier -->
+        <h2 class="text-lg font-semibold mb-2 flex items-center orbitron">
+          <i class="bi bi-layers-fill mr-2 text-cyan-400"></i>
+          Transaction Tier (Per Chain)
+        </h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <!-- Starter Pack Card -->
+          <div id="starter-pack" class="tier-card glassmorphism cyberpunk-border rounded-lg p-4 cursor-pointer selected transition-all duration-300" onclick="selectTier('starter-pack')">
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center">
+                <span class="text-xl mr-3 bg-gradient-to-br from-cyan-500 to-cyan-700 p-2 rounded-full">🚀</span>
+                <h3 class="text-xl font-semibold orbitron">Starter Pack</h3>
+              </div>
+              <div class="text-cyan-400">
+                <i class="bi bi-check-circle-fill text-xl"></i>
+              </div>
+            </div>
+            <p class="text-gray-300 ml-12 text-lg">~<span class="text-cyan-400 font-semibold">2 Tx</span> / chain</p>
+            <div class="ml-12 mt-1 text-xs text-gray-400">Ideal for basic exploration</div>
+          </div>
+          
+          <!-- Pro Tester Card -->
+          <div id="pro-tester" class="tier-card glassmorphism cyberpunk-border rounded-lg p-4 cursor-pointer transition-all duration-300" onclick="selectTier('pro-tester')">
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center">
+                <span class="text-xl mr-3 bg-gradient-to-br from-pink-500 to-pink-700 p-2 rounded-full">💡</span>
+                <h3 class="text-xl font-semibold orbitron">Pro Tester</h3>
+              </div>
+              <div class="text-gray-500">
+                <i class="bi bi-circle text-xl"></i>
+              </div>
+            </div>
+            <p class="text-gray-300 ml-12 text-lg">~<span class="text-pink-500 font-semibold">30 Tx</span> / chain</p>
+            <div class="ml-12 mt-1 text-xs text-gray-400">Perfect for development and testing</div>
+          </div>
+        </div>
+
+        <!-- Gas Info -->
+        <div class="glassmorphism cyberpunk-border p-4 mb-4 rounded-lg flex items-center text-gray-300">
+          <span class="text-xl mr-3 bg-gradient-to-r from-cyan-600 to-pink-600 p-2 rounded-full">💡</span>
+          <div>
+            <p class="text-sm">Gas will be sent to <span id="chain-count" class="font-bold text-cyan-400 text-lg">0</span> mainnet chain(s) at tier:</p>
+            <p class="font-semibold text-lg"><span id="tier-display" class="text-cyan-400">2 Tx</span> per chain</p>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="proceed-button" class="btn-primary glassmorphism cyberpunk-border w-full py-3 rounded-lg font-medium text-lg flex items-center justify-center">
+          <span class="text-xl mr-2">🚀</span>
+          <span>Instant Delivery — Proceed to Pay</span>
+        </button>
+        
+        <div class="text-center mt-3 text-xs text-gray-400">
+          <p>Powered by <span class="text-cyan-400 font-semibold">mIntair One-Click Faucet</span> • Safe & Secure</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Preset Modal -->
+  <div id="save-preset-modal">
+    <div class="glassmorphism cyberpunk-border p-6 rounded-lg max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold orbitron">Save Custom Preset</h3>
+        <button id="close-modal" class="text-gray-400 hover:text-white">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <p class="text-gray-300 text-sm mb-4">Create a custom preset with your current chain selection:</p>
+      <div class="mb-4">
+        <label for="preset-name" class="block text-sm font-medium mb-2">Preset Name</label>
+        <input type="text" id="preset-name" class="glassmorphism w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="My Custom Preset">
+      </div>
+      <div class="flex space-x-3">
+        <button id="cancel-save" class="btn-secondary glassmorphism flex-1 py-2 rounded-lg">Cancel</button>
+        <button id="confirm-save" class="btn-primary glassmorphism flex-1 py-2 rounded-lg">Save Preset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Chain data with logos (using emoji as placeholder)
+    const chainData = [
+      { id: 'base', name: 'Base', logo: '🔵' },
+      { id: 'linea', name: 'Linea', logo: '🟢' },
+      { id: 'taiko', name: 'Taiko', logo: '🔶' },
+      { id: 'worldchain', name: 'World Chain', logo: '🌍' },
+      { id: 'manta', name: 'Manta', logo: '🐡' },
+      { id: 'bsc', name: 'BSC', logo: '🟡' },
+      { id: 'celo', name: 'Celo', logo: '🟠' },
+      { id: 'bitlayer', name: 'Bitlayer', logo: '💻' },
+      { id: 'arbitrum', name: 'Arbitrum', logo: '🔷' },
+      { id: 'scroll', name: 'Scroll', logo: '📜' },
+      { id: 'berachain', name: 'Berachain', logo: '🐻' },
+      { id: 'xai', name: 'Xai', logo: '🎮' },
+      { id: 'lens', name: 'Lens', logo: '🔍' },
+      { id: 'avalanche', name: 'Avalanche', logo: '❄️' },
+      { id: 'mantle', name: 'Mantle', logo: '🧥' },
+      { id: 'flowevm', name: 'Flow EVM', logo: '🌊' },
+      { id: 'optimism', name: 'Optimism', logo: '❤️' },
+      { id: 'opbnb', name: 'opBNB', logo: '🟨' },
+      { id: 'zora', name: 'Zora', logo: '🎨' },
+      { id: 'sei', name: 'Sei', logo: '🌟' },
+      { id: 'ethereum', name: 'Ethereum', logo: '💎' },
+      { id: 'fantom', name: 'Fantom', logo: '👻' },
+      { id: 'beam', name: 'Beam', logo: '💫' },
+      { id: 'filecoin', name: 'Filecoin', logo: '📁' },
+      { id: 'zksyncera', name: 'zkSync Era', logo: '⚡' },
+      { id: 'blast', name: 'Blast', logo: '💥' },
+      { id: 'zircuit', name: 'Zircuit', logo: '🔄' },
+      { id: 'sonic', name: 'Sonic', logo: '🔊' },
+      { id: 'polygon', name: 'Polygon', logo: '🔺' },
+      { id: 'gnosis', name: 'Gnosis', logo: '🦉' },
+      { id: 'polygona', name: 'Polygon Amoy', logo: '📱' },
+      { id: '0gnewton', name: '0G Newton', logo: '🍏' },
+    ];
+
+    const chainsGrid = document.getElementById('chains-grid');
+    const chainSearch = document.getElementById('chain-search');
+    
+    // Generate chain checkboxes
+    function generateChainItems(chains) {
+      chainsGrid.innerHTML = '';
+      chains.forEach(chain => {
+        const chainElement = document.createElement('div');
+        chainElement.className = 'flex items-center p-2 hover:bg-opacity-10 hover:bg-cyan-500 rounded-lg transition-all duration-200';
+        chainElement.innerHTML = `
+          <div class="checkbox-custom" data-chain="${chain.name}" onclick="toggleChain(this)"></div>
+          <span>${chain.logo} ${chain.name}</span>
+        `;
+        chainsGrid.appendChild(chainElement);
+      });
+    }
+
+    // Initial generation of chain items
+    generateChainItems(chainData);
+
+    // Chain search functionality
+    chainSearch.addEventListener('input', () => {
+      const searchTerm = chainSearch.value.toLowerCase();
+      const filteredChains = chainData.filter(chain => 
+        chain.name.toLowerCase().includes(searchTerm)
+      );
+      generateChainItems(filteredChains);
+    });
+
+    // Theme toggling
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    let isDarkMode = true; // Default to dark mode
+
+    themeToggle.addEventListener('click', () => {
+      isDarkMode = !isDarkMode;
+      if (isDarkMode) {
+        body.classList.add('dark');
+        body.classList.remove('light-bg');
+        body.classList.add('dark-bg');
+        themeToggle.innerHTML = '<i class="bi bi-sun text-xl text-cyan-400"></i>';
+      } else {
+        body.classList.remove('dark');
+        body.classList.remove('dark-bg');
+        body.classList.add('light-bg');
+        themeToggle.innerHTML = '<i class="bi bi-moon text-xl text-cyan-700"></i>';
+      }
+    });
+
+    // Chain selection
+    const selectedChains = new Set();
+    const chainCountElement = document.getElementById('chain-count');
+    const savePresetContainer = document.getElementById('save-preset-container');
+    const presetSelector = document.getElementById('preset-selector');
+    const customOption = document.getElementById('custom-option');
+    
+    // Track original preset selections to detect custom changes
+    let currentPreset = null;
+    let originalSelection = new Set();
+
+    function toggleChain(element) {
+      const chainName = element.getAttribute('data-chain');
+      element.classList.toggle('checked');
+      
+      if (element.classList.contains('checked')) {
+        selectedChains.add(chainName);
+      } else {
+        selectedChains.delete(chainName);
+      }
+      
+      updateChainCount();
+      checkIfCustomSelection();
+    }
+
+    function updateChainCount() {
+      const count = selectedChains.size;
+      chainCountElement.textContent = count;
+    }
+
+    function checkIfCustomSelection() {
+      // If no preset is selected yet, we don't need to show the save option
+      if (!currentPreset) return;
+      
+      // Compare current selection with original preset selection
+      let isCustom = false;
+      
+      if (selectedChains.size !== originalSelection.size) {
+        isCustom = true;
+      } else {
+        // Check if all items match
+        for (const chain of selectedChains) {
+          if (!originalSelection.has(chain)) {
+            isCustom = true;
+            break;
+          }
+        }
+      }
+      
+      // Show or hide the save preset option
+      if (isCustom) {
+        savePresetContainer.classList.remove('hidden');
+        customOption.disabled = false;
+        customOption.hidden = false;
+        presetSelector.value = 'custom';
+      } else {
+        savePresetContainer.classList.add('hidden');
+        presetSelector.value = currentPreset;
+      }
+    }
+
+    // Tier selection
+    let selectedTier = 'starter-pack';
+    const tierDisplay = document.getElementById('tier-display');
+
+    function selectTier(tierId) {
+      const starterPack = document.getElementById('starter-pack');
+      const proTester = document.getElementById('pro-tester');
+      
+      // Reset both cards
+      starterPack.classList.remove('selected');
+      proTester.classList.remove('selected');
+      
+      starterPack.querySelector('.bi').classList.remove('bi-check-circle-fill', 'text-cyan-400');
+      starterPack.querySelector('.bi').classList.add('bi-circle', 'text-gray-500');
+      
+      proTester.querySelector('.bi').classList.remove('bi-check-circle-fill', 'text-cyan-400');
+      proTester.querySelector('.bi').classList.add('bi-circle', 'text-gray-500');
+      
+      // Select the chosen card
+      const selectedElement = document.getElementById(tierId);
+      selectedElement.classList.add('selected');
+      
+      selectedElement.querySelector('.bi').classList.remove('bi-circle', 'text-gray-500');
+      selectedElement.querySelector('.bi').classList.add('bi-check-circle-fill', 'text-cyan-400');
+      
+      if (tierId === 'starter-pack') {
+        document.getElementById('proceed-button').innerHTML = '<span class="text-xl mr-2">🚀</span> <span>Instant Delivery — Proceed to Pay</span>';
+        tierDisplay.textContent = '2 Tx';
+        tierDisplay.className = 'text-cyan-400';
+      } else {
+        document.getElementById('proceed-button').innerHTML = '<span class="text-xl mr-2">💡</span> <span>Instant Delivery — Proceed to Pay</span>';
+        tierDisplay.textContent = '30 Tx';
+        tierDisplay.className = 'text-pink-500';
+      }
+
+      selectedTier = tierId;
+    }
+
+    // Preset selection
+    const customPresets = {};
+    
+    presetSelector.addEventListener('change', () => {
+      const value = presetSelector.value;
+      
+      // Clear all selections first
+      const checkboxes = document.querySelectorAll('.checkbox-custom');
+      checkboxes.forEach(checkbox => {
+        checkbox.classList.remove('checked');
+      });
+      selectedChains.clear();
+      
+      // Hide save preset option initially
+      savePresetContainer.classList.add('hidden');
+      
+      // Apply preset selections
+      if (value === 'preset1') { // All EVM Chains
+        checkboxes.forEach(checkbox => {
+          checkbox.classList.add('checked');
+          const chainName = checkbox.getAttribute('data-chain');
+          selectedChains.add(chainName);
+        });
+        currentPreset = 'preset1';
+      } else if (value === 'preset2') { // Popular Mainnet Chains
+        const popularChains = ['Ethereum', 'Polygon', 'BSC', 'Arbitrum', 'Optimism', 'Avalanche'];
+        checkboxes.forEach(checkbox => {
+          const chainName = checkbox.getAttribute('data-chain');
+          if (popularChains.includes(chainName)) {
+            checkbox.classList.add('checked');
+            selectedChains.add(chainName);
+          }
+        });
+        currentPreset = 'preset2';
+      } else if (value === 'preset3') { // Testnet Chains
+        const testnetChains = ['Taiko', 'Polygon Amoy'];
+        checkboxes.forEach(checkbox => {
+          const chainName = checkbox.getAttribute('data-chain');
+          if (testnetChains.includes(chainName)) {
+            checkbox.classList.add('checked');
+            selectedChains.add(chainName);
+          }
+        });
+        currentPreset = 'preset3';
+      } else if (value === 'preset4') { // EVM Compatible
+        const evmChains = ['Ethereum', 'Polygon', 'BSC', 'Avalanche', 'Fantom', 'Arbitrum', 'Optimism'];
+        checkboxes.forEach(checkbox => {
+          const chainName = checkbox.getAttribute('data-chain');
+          if (evmChains.includes(chainName)) {
+            checkbox.classList.add('checked');
+            selectedChains.add(chainName);
+          }
+        });
+        currentPreset = 'preset4';
+      } else if (value.startsWith('custom_')) {
+        // Load a custom preset
+        const presetId = value;
+        const chains = customPresets[presetId];
+        
+        checkboxes.forEach(checkbox => {
+          const chainName = checkbox.getAttribute('data-chain');
+          if (chains.includes(chainName)) {
+            checkbox.classList.add('checked');
+            selectedChains.add(chainName);
+          }
+        });
+        currentPreset = presetId;
+      }
+      
+      // Store the original selection for comparison
+      originalSelection = new Set(selectedChains);
+      
+      updateChainCount();
+    });
+
+    // Modal functionality
+    const modal = document.getElementById('save-preset-modal');
+    const savePresetBtn = document.getElementById('save-preset-btn');
+    const closeModalBtn = document.getElementById('close-modal');
+    const cancelSaveBtn = document.getElementById('cancel-save');
+    const confirmSaveBtn = document.getElementById('confirm-save');
+    const presetNameInput = document.getElementById('preset-name');
+    
+    savePresetBtn.addEventListener('click', () => {
+      presetNameInput.value = 'My Custom Preset';
+      modal.classList.add('active');
+    });
+    
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+    
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelSaveBtn.addEventListener('click', closeModal);
+    
+    confirmSaveBtn.addEventListener('click', () => {
+      const presetName = presetNameInput.value || 'My Custom Preset';
+      const presetId = 'custom_' + Date.now();
+      
+      // Save the preset
+      customPresets[presetId] = Array.from(selectedChains);
+      
+      // Add a new option to the select box
+      const option = document.createElement('option');
+      option.value = presetId;
+      option.text = presetName;
+      
+      // Insert before the "Custom Selection" option
+      const customIndex = Array.from(presetSelector.options).findIndex(opt => opt.value === 'custom');
+      presetSelector.add(option, customIndex);
+      
+      // Select the new preset
+      presetSelector.value = presetId;
+      currentPreset = presetId;
+      
+      // Update original selection
+      originalSelection = new Set(selectedChains);
+      
+      // Hide the save preset option
+      savePresetContainer.classList.add('hidden');
+      
+      closeModal();
+    });
+
+    // Connect Wallet functionality
+    const connectWalletBtn = document.getElementById('connectWallet');
+    const walletStatus = document.getElementById('walletStatus');
+    let isConnected = false;
+    
+    connectWalletBtn.addEventListener('click', () => {
+      if (isConnected) return;
+      
+      walletStatus.textContent = 'Connecting...';
+      
+      // Simulate connection delay
+      setTimeout(() => {
+        isConnected = true;
+        walletStatus.textContent = '0x71...3F4A';
+        connectWalletBtn.classList.add('border-green-400');
+        connectWalletBtn.innerHTML = '<i class="bi bi-wallet2-fill mr-2 text-green-400"></i><span id="walletStatus">0x71...3F4A</span>';
+      }, 1000);
+    });
+
+    // Proceed button
+    const proceedButton = document.getElementById('proceed-button');
+    proceedButton.addEventListener('click', () => {
+      if (selectedChains.size === 0) {
+        alert('Please select at least one chain before proceeding.');
+      } else if (!isConnected) {
+        alert('Please connect your wallet first.');
+        connectWalletBtn.click();
+      } else {
+        const tierName = selectedTier === 'starter-pack' ? 'Starter Pack (2 Tx)' : 'Pro Tester (30 Tx)';
+        alert(`Proceeding with ${selectedChains.size} chains using the ${tierName} tier. Your transaction is being processed.`);
+      }
+    });
+  </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
